@@ -1,0 +1,44 @@
+本题目核心难点在于压缩时间，通过咨询刘凯源学长获得了重置运算符这种操作，
+通过重置运算符来改变node这个结构体也就是set的排序方式，小于号不再是单纯的小于号
+来AC此题目
+
+#include<bits/stdc++.h>
+using namespace std;
+using ll = long long;
+struct node
+{
+    ll x, y, id, d;
+    bool operator<(const node& t) const
+    {
+        return d == t.d ? id < t.id : d < t.d;
+    }
+};
+set<node> st;
+map<ll, node> mp;
+int main()
+{
+    int q;
+    cin >> q;
+    while(q--)
+    {
+        int opt;
+        cin >> opt;
+        if(opt == 1)
+        {
+            ll x, y, id;
+            cin >> id >> x >> y;
+            mp[id] = {x, y, id, x * x + y * y};
+            st.insert(mp[id]);
+        }
+        else if(opt == 2)
+        {
+            int id;
+            cin >> id;
+            st.erase(st.find(mp[id]));
+        }
+        else if(opt == 3)
+        {
+            cout << (*st.begin()).id << endl;
+        }
+    }
+}
