@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+#define int long long
+
+int n,m;
+int dp[10010];
+bool s[10010][101];
+int coin[10010];
+
+bool cmp(int x,int y)
+{
+    return x > y;
+}
+
+signed main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    cin>>n>>m;
+    for(int i = 0;i < n;i++) cin >> coin[i];
+    sort(coin+1,coin+n+1,cmp);
+    for(int i = 0;i < n;i++)
+    {
+        for(int j = m;j >= coin[i];j--)
+        {
+            if(dp[j] <= dp[j-coin[i]]+coin[i])
+            {
+                dp[j] = dp[j-coin[i]]+coin[i];
+                s[i][j] = true;
+            }
+        }
+    }
+    if(dp[m] == m)
+    {
+        vector<int> ans;
+        int val = m;
+        int idx = n;
+        while(val != 0)
+        {
+            if(s[idx][val])
+            {
+                if(val != m) cout<<" ";
+                cout<<coin[idx];
+                val -= coin[idx];
+            }
+            idx--;
+        }
+    }
+    else
+    {
+        cout<<"No Solution";
+    }
+    return 0;
+}
