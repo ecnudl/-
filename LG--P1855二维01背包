@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define all(x) x.begin(),x.end()
+#define pb push_back
+using ll = long long;
+
+const int N = 210;
+int n,T,M;
+int f[N][N],v[N],t[N];
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);cout.tie(nullptr);
+    cin >> n >> M >> T;
+    for(int i = 1;i <= n;i++) cin >> v[i] >> t[i];
+    for(int i = 1;i <= n;i++)
+    {
+        for(int u = T;u >= t[i];u--)
+        for(int p = M;p >= v[i];p--)
+        {
+            f[u][p] = max(f[u][p],f[u-t[i]][p-v[i]]+1);
+        }
+    }
+    cout<<f[T][M];
+    return 0;
+}
