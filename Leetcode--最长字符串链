@@ -1,0 +1,27 @@
+算法：记忆化搜索
+bool cmp(string a,string b)
+{
+    return a.length() < b.length();
+}
+class Solution {
+public:
+    int longestStrChain(vector<string>& words) {
+        int ans = 0;
+        sort(words.begin(),words.end(),cmp);
+        unordered_map<string,int>mp;
+        for(auto &s:words)
+        {
+            int num = 0;
+            for(int i = 0;i < s.length();i++)
+            {
+                auto res = mp.find(s.substr(0,i)+s.substr(i+1));
+                if(res != mp.end())
+                {
+                    num = max(num,res->second);
+                }
+            }
+            ans = max(ans,mp[s] = num+1);
+        }
+        return ans;
+    }
+};
