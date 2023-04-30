@@ -1,0 +1,36 @@
+//核心思想在于给每一个字符串一个独特的ull加密数字作为匹配
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef unsigned long long ull;
+const ull base = 13;
+const ull mod = 200410097773;
+ull a[100001];
+char s[10001];
+
+ull trans()
+{
+    ull ans = 0;
+    for(int i = 0;s[i];i++)
+    {
+        ans = (ans*base + (ull)s[i])%mod;
+    }
+    return ans;
+}
+
+int main()
+{
+    int n;cin >> n;
+    for(int i = 0;i < n;i++)
+    {
+        cin >> s;
+        a[i] = trans();
+    }
+    sort(a,a+n);
+    ull ans = 1;
+    for(int i = 0;i < n-1;i++)
+    {
+        if(a[i] != a[i+1]) ans++;
+    }
+    cout<<ans;
+}
