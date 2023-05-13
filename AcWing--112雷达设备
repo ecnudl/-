@@ -1,0 +1,49 @@
+贪心题目，是属于区间选点的一种，区别在于这个题目有一个由点转向区间的过程
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int N = 1010;
+int n,d;
+
+struct Range{
+    double l,r;
+    bool operator < (const Range &M)
+    {
+        return r < M.r;
+    }
+}range[N];
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0);cout.tie(0);
+    
+    bool success = true;
+    cin >> n >> d;
+    for(int i = 0;i < n;i++)
+    {
+        double x,y;
+        cin >> x >> y;
+        if(y > d) success = false;
+        double res = sqrt(fabs(d*d-y*y));
+        range[i] = {x-res,x+res};
+    }
+    int ans = 0;
+    double ep = -2e9;
+    if(!success) cout << -1 << endl;
+    else
+    {
+        sort(range,range+n);
+        for(int i = 0;i < n;i++)
+        {
+            if(range[i].l > ep)
+            {
+                ans++;
+                ep = range[i].r;
+            }
+        }
+        cout << ans << endl;
+    }
+    return 0;
+}
