@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int N = 100010;
+int son[N*31][2],a[N],idx; //注意这里son的第一维要开成N*31大小的
+int n;
+
+void insert(int num)                //Trie数模板
+{
+    int p = 0;
+    for(int i = 30;i >= 0;i--)
+    {
+        int u = num >> i & 1;
+        if(!son[p][u]) son[p][u] = ++idx;
+        p = son[p][u];
+    }
+}
+
+int query(int num)
+{
+    int p = 0;
+    int res = 0;
+    for(int i = 30;i >= 0;i--)
+    {
+        int u = num >> i & 1;
+        if(son[p][!u])
+        {
+            res = res*2 + 1;
+            p = son[p][!u];
+        }
+        else
+        {
+            res = res*2;
+            p = son[p][u];
+        }
+    }
+    return res;
+}
+
+int main()
+{
+    cin >> n;
+    for(int i = 0;i < n;i++)
+    {
+        cin >> a[i];
+        insert(a[i]);
+    }
+    int res = 0;
+    for(int i = 0;i < n;i++)
+    {
+        res = max(res,query(a[i]));
+    }
+    cout << res << endl;
+    
+    return 0;
+}
