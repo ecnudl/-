@@ -1,0 +1,70 @@
+两种算法：省略sha7dow的高精度模板
+算法一：DP
+#define N 205
+Big dp[N][N];
+int n, m, p, vis[N][N];
+
+void DP()
+{
+    for(int i = 1;i <= m;i++)
+        for(int j = 1;j <= n;j++)
+        {
+            dp[i][j] = xtob(vis[i][j]);
+            if(i+j > 2)
+            {
+                for(int x = 1;x <= i-x;x++) dp[i][j] = MAX(dp[i][j],add(dp[i-x][j],dp[x][j]));
+                for(int x = 1;x <= j-x;x++) dp[i][j] = MAX(dp[i][j],add(dp[i][x],dp[i][j-x]));
+            }
+        }
+}
+
+signed main()
+{
+    scanf("%lld %lld %lld",&m,&n,&p);
+    for(int i = 0;i < p;i++)
+    {
+        int x,y;
+        scanf("%lld %lld",&x,&y);
+        scanf("%lld",&vis[x][y]);
+    }
+    DP();
+    print(dp[m][n]);
+    return 0;
+}
+算法二：记忆化搜索
+#define N 205
+Big dp[N][N];
+int n, m, p, vis[N][N];
+
+Big dfs(int h, int w) {
+    if (vis[h][w]) return dp[h][w];
+    for (int i = 1; i < h; i++) {
+        Big tmp = add(dfs(i, w), dfs(h - i, w));
+        if (cmp(tmp, dp[h][w]) == 1) dp[h][w] = tmp;
+    }
+    for (int i = 1; i < w; i++) {
+        Big tmp = add(dfs(h, i), dfs(h, w - i));
+        if (cmp(tmp, dp[h][w]) == 1) dp[h][w] = tmp;
+    }
+    vis[h][w] = 1;
+    return dp[h][w];
+}
+
+int main(void)
+{
+    scanf("%d %d %d", &n, &m, &p);
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++)
+            dp[i][j] = xtob(0), vis[i][j] = 0;
+    }
+    for (int i = 1; i <= p; i++) {
+        int h, w;
+        Big v;
+        scanf("%d %d", &h, &w);
+        v = read();
+        dp[h][w] = v;
+    }
+    Big res = dfs(n, m);
+    print(res);
+    return 0;
+}
