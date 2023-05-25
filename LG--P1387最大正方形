@@ -1,0 +1,60 @@
+两种做法第一种dp比较难想，值得学习，第二种前缀和题目比较暴力
+#include <bits/stdc++.h>
+
+using namespace std;
+const int N = 110;
+int f[N][N],s[N][N];
+int ans,n,m;
+/*
+int main()
+{
+    scanf("%d %d",&n,&m);
+    for(int i = 1;i <= n;i++)
+        for(int j = 1;j <= m;j++)
+        {
+            scanf("%d",&g[i][j]);
+            if(g[i][j]) f[i][j] = min(min(f[i-1][j],f[i][j-1]),f[i-1][j-1])+1;
+            ans = max(ans,f[i][j]);
+        }
+
+    cout << ans << endl;
+}
+*/
+
+int count(int x,int y)
+{
+    int res = 0;
+    int MAX = m-y;
+    bool flag = true;
+    for(int a = 1;a <= MAX;a++)
+    {
+        for(int i = x;i <= x+a-1;i++)
+        {
+            if(s[i][y+a-1]-s[i][y-1] != a){
+                flag = false;
+                break;
+            }
+        }
+        if(!flag) break;
+        res = max(res,a);
+    }
+    return res;
+}
+
+int main()
+{
+    cin >> n >> m;
+    for(int i = 1;i <= n;i++)
+        for(int j = 1;j <= m;j++)
+        {
+            cin >> f[i][j];
+            s[i][j] = s[i][j-1] + f[i][j];
+        }
+    //若一个正方形以i,j作为左上角顶点，那么当其边长为a的时候，第i行边的权值为s[i][j+a-1]-s[i][j-1]所以遍历从第i行一直到i+a-1行即可
+    for(int i = 1;i <= n;i++)
+        for(int j = 1;j <= m;j++)
+            ans = max(ans,count(i,j));
+    cout << ans << endl;
+
+    return 0;
+}
