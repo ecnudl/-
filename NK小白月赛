@@ -1,0 +1,83 @@
+/*
+题目要求给出一个长度为n的序列，首先输入T，之后k，n然后给出序列
+在这个序列，求出满足x = Al*Al+1*Al+2……Ar，x的末尾恰好有k个零的子列个数
+算法主要是前缀和+二分，思路的难点在于其末尾零的个数等于前缀和数字中能被拆分成2和5的个数的最小值
+二分的思路也比较新颖，由于要保证答案可以为1，所以在这里将l初始为i-1，r初始为n+1，给二者先拉开距离，避免在只有一个元素的时候最终答案为0
+同时二分也是先找出第一个满足大于等于k的下标，之后再找出第一个大于等于k+1的下标，最后相减即为所求距离。
+*/
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define all(x) x.begin(),x.end()
+#define int long long
+#define pb push_back
+using ll = long long;
+
+const int N = 200010;
+int a[N];
+int f[N][2],pre[N][2],n,k;
+
+bool check(int num,int l,int r)
+{
+    int x = pre[r][0] - pre[l-1][0];
+    int y = pre[r][1] - pre[l-1][1];
+    int ans = min(x,y);
+    if(ans >= num) return true;
+    else return false;
+}
+
+void solve()
+{
+    pre[0][0] = pre[0][1] = 0;
+    cin >> n >> k;
+    for(int i = 1;i <= n;i++)
+    {
+        cin >> a[i];
+        f[i][0] = f[i][1] = 0;
+        while(a[i]%2 == 0)
+        {
+            f[i][0]++;
+            a[i] /= 2;
+        }
+        while(a[i]%5 == 0)
+        {
+            f[i][1]++;
+            a[i] /= 5;
+        }
+        pre[i][0] = pre[i-1][0]+f[i][0];
+        pre[i][1] = pre[i-1][1]+f[i][1];
+    }
+    int ans = 0;
+    for(int i = 1;i <= n;i++)
+    {
+        int l = i-1;
+        int r = n+1;
+        int mid;
+        while(l + 1 < r)
+        {
+            mid = (l+r)/2;
+            if(check(k,i,mid)) r = mid;
+            else l = mid;
+        }
+        int al = r;
+        l = i-1,r = n+1;
+        while(l + 1 < r)
+        {
+            mid = (l+r)/2;
+            if(check(k+1,i,mid)) r = mid;
+            else l = mid;
+        }
+        int ar = r;
+        ans += ar-al;
+    }
+    cout << ans << endl;
+}
+
+signed main()
+{
+    int tc;cin >> tc;
+    while(tc--) solve();
+
+    return 0;
+}
