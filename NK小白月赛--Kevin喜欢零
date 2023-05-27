@@ -54,6 +54,11 @@ void solve()
         int l = i-1;
         int r = n+1;
         int mid;
+        /*
+        之后的这段代码跟二分代码模板有些不同，
+        原因就是因为l和r各自向左和向右移动了一位，
+        所以l < r ；l = mid+1 要改成l + 1 < r ；l = mid这种类型
+        */
         while(l + 1 < r)
         {
             mid = (l+r)/2;
