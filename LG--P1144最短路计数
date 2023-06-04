@@ -1,0 +1,62 @@
+算法：堆优化版本的dijkstra + 内部dp计数
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int N = 1000010;
+const int mod = 100003;
+typedef pair<int,int> PII;
+int dist[N],ans[N];
+bool st[N];
+int n,m;
+vector<int> g[N];
+
+void dijkstra()
+{
+    memset(dist,0x3f,sizeof(dist));
+    priority_queue< PII, vector<PII>, greater<PII> >heap;
+    dist[1] = 0;
+    ans[1] = 1;
+    heap.push({0,1});
+    while(heap.size())
+    {
+        auto t = heap.top();
+        heap.pop();
+        int ver = t.second,distance = t.first;
+        if(st[ver]) continue;
+        for(int i = 0;i < g[ver].size();i++)
+        {
+            int j = g[ver][i];
+            if(dist[j] > distance + 1)
+            {
+                dist[j] = distance+1;
+                ans[j] = ans[ver];          //其实这里的ans统计个数运用了dp原理，从ans[1] = 1，开始往后迭代，从而得到所有的答案
+                heap.push({dist[j],j});
+            }
+            else if(dist[j] == distance + 1)
+            {
+                ans[j] += ans[ver];
+                ans[j] %= mod;
+            }
+        }
+        st[ver] = true;
+    }
+    for(int i = 1;i <= n;i++) cout << ans[i] << endl;
+}
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);cout.tie(nullptr);
+    cin >> n >> m;
+    while(m --)
+    {
+        int a,b;
+        cin >> a >> b;
+        g[a].push_back(b);             //这里注意是无向图，因此需要存图存两次
+        g[b].push_back(a);
+    }
+    dijkstra();
+
+    return 0;
+}
