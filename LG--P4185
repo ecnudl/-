@@ -1,0 +1,93 @@
+/*
+本题目主要的算法是并查集+离线操作，首先如果按照题目的意思来的话，挨个暴力排序对于1e5的复杂度是一定会tle的，所以应该更换数据结构
+一个要点就是在题目中看到树脑子里就不要只想着建树，比如这道题目就应该把重心移动到并查集上面
+算法思路：
+1.题目里一个非常巧妙的解法就是离线操作，就是先把所有输入的k离线出来，然后进行从大到小排序，之后再把所有输入的边长离线出来，再次进行排序。
+2.之后进行大小比较，因为前面的k要大于后面的k所以如果前后的v在并查集中是一个家族的话，前面的k一旦合适后面的一定合适，所以后面的可以不用在操作，直接用find函数获取根节点，然后输出对应number就可以
+3.这是一个带有附加值的并查集，在父亲节点和number合并的时候要注意细节和顺序。
+*/
+#include <bits/stdc++.h>
+
+using namespace std;
+const int N = 100010;
+int ans[N],tree[N],number[N];
+int n,q;
+
+struct Node
+{
+    int l;
+    int r;
+    int w;
+} node[N];
+
+struct Range
+{
+    int k;
+    int v;
+    int id;
+} range[N];
+
+bool cmp(Node a,Node b)
+{
+    return a.w > b.w;
+}
+
+bool cmp2(Range a,Range b)
+{
+    return a.k > b.k;
+}
+
+void init_set()
+{
+    for(int i = 1;i <= n;i++) tree[i] = i,number[i] = 1;
+}
+
+int find(int x)
+{
+    if(x != tree[x]) tree[x] = find(tree[x]);
+    return tree[x];
+}
+
+void merge(int x,int y)
+{
+    int a = find(x);
+    int b = find(y);
+    if(a != b)
+    {
+        tree[a] = b;
+        number[b] += number[a];
+    }
+}
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    cin >> n >> q;
+    init_set();
+    for(int i = 1;i < n;i++)
+    {
+        cin >> node[i].l >> node[i].r >> node[i].w;
+    }
+    for(int i = 1;i <= q;i++)
+    {
+        cin >> range[i].k >> range[i].v;
+        range[i].id = i;
+    }
+    sort(node + 1,node + n,cmp);
+    sort(range + 1,range + q + 1,cmp2);
+    int j = 1;
+    for(int i = 1;i <= q;i++)
+    {
+        while(j < n && node[j].w >= range[i].k)
+        {
+            merge(node[j].l,node[j].r);
+            j++;
+        }
+        ans[range[i].id] = number[find(range[i].v)];
+    }
+    for(int i = 1;i <= q;i++) cout << ans[i]-1 << endl;
+
+    return 0;
+}
