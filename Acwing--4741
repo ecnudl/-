@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10;
+
+int dp[N];
+
+int main()
+{
+    memset(dp,0x3f,sizeof(dp));
+    dp[0] = 0;
+    for(int i = 1;i < N;i++)
+    {
+        dp[i] = min(dp[i-1] + 1,dp[i]);
+        for(int j = i + i,k = 1;j < N;j += i,k++)
+        {
+            dp[j] = min(dp[j],dp[i] + 4 + 2 * k);
+        }
+    }
+    int t;cin >> t;
+    for(int i = 1;i <= t;i++)
+    {
+        int n;cin >> n;
+        cout << "Case #" << i << ": " << dp[n] << endl;
+    }
+    return 0;
+}
